@@ -3,33 +3,24 @@ import mode
 
 formats = ["", ".txt", ".doc"]
 
-class cardtype:
 
-    def __itit__ (self, s):
-        self.word = self.dash_separate(s)
+class Cardtype:
+    def __init__(self, s):
+        self.front = s.split("- ", "\t")[0]
+        try:
+            self.back = s.split("- ", "\t")[1:].join()
+        except IndexError:
+            self.back = ""
 
-    def front(self):
-        return self.word[0]
-    
-    def back(self):
-        return self.word[1]
-    
     def side(self, b):
-        if b:
-            return self.front()
-        return self.back()
-    
-    def dash_separate(s):
-        a = s.split("- ", "\t")[0]
-        b = s.split("- ", "\t")[1:].join()
-        return [a, b]
+        return self.front if b else self.back
 
 
 def miss_line(s):
     if s[0] == '/':
         return True
     for c in s:
-        if c.isspace():
+        if not c.isspace():
             return False
     return True
 
@@ -49,7 +40,7 @@ def menu():
             if cards:
                 if len(cards):
                     message.scanned_successfully(len(cards), file)
-                    mode.set(cards)
+                    mode.setmode(cards)
                 else:
                     message.file_is_empty(file)
 
@@ -59,10 +50,10 @@ def get_pack(file):
     try:
         for s in open(file):
             if not miss_line(s):
-                cards.append().s()
+                cards.append(Cardtype(s))
             if s[0] == '!':
                 break
     except OSError:
-        message.file_not_found()
+        message.file_not_found(file)
         return None
     return cards

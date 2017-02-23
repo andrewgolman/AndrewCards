@@ -1,4 +1,4 @@
-dot_string = "........................................"
+dot_string = "." * 40
 
 
 def card_back(s):
@@ -43,8 +43,10 @@ def enter_the_file():
     print("Enter '0' to quit.")
     print("Enter 'f1' to get more details.")
 
+
 def file_is_empty(s):
     print("File '", s, "' is empty!")
+
 
 def file_not_found(s):
     print("File '", s, "' is missing in the directory. Enter another name")
@@ -59,7 +61,15 @@ def helpmsg():
          "developers on andrewsgolman@gmail.com to get more details.""")
 
 
-def learn_mode():
+def incorrect_command():
+    print("Incorrect_instruction!")
+
+
+def learn_mode_intro():
+    print("Learn mode selected")
+
+
+def learn_mode_legend():
     print("0. Default")
     print("-1. Switch the language.")
     print("-2. Mix the cards.")
@@ -69,6 +79,10 @@ def learn_mode():
 
 def menu():
     print("\n\nMENU")
+
+
+def noans_mode_intro():
+    print("Constructing mode selected")
 
 
 def new_line():
@@ -83,7 +97,11 @@ def previous_answer():
     print("\t\t prev:  ")
 
 
-def review_mode():
+def review_mode_intro():
+    print("Review mode selected")
+
+
+def review_mode_legend():
     print("1. Right answer")
     print("2. Wrong answer")
     print("-1. Quit")
@@ -109,7 +127,7 @@ def test_mode():
 
 
 def welcome():
-    print("Welcome to AndrewCards4.0! With this application You can learn and review\nforeign words and phases!")
+    print("Welcome to AndrewCards4.3! With this application You can learn and review\nforeign words and phases!")
 
 
 def wrong(a):
