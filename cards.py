@@ -1,14 +1,19 @@
 import message
-import mode
+from config import path
 
 formats = ["", ".txt", ".doc"]
+last_pack = "No pack chosen"
 
+# TODO ответ появляется при incorrect instruction
 
 class Cardtype:
     def __init__(self, s):
-        self.front = s.split("- ", "\t")[0]
+        s = s.replace("- ", "\t")
+        s = s.replace("— ", "\t")
+        s = s.replace("– ", "\t")
+        self.front = s.split("\t")[0].strip()
         try:
-            self.back = s.split("- ", "\t")[1:].join()
+            self.back = s.split("\t")[1].strip()
         except IndexError:
             self.back = ""
 
@@ -17,7 +22,7 @@ class Cardtype:
 
 
 def miss_line(s):
-    if s[0] == '/':
+    if s[0] == "/":
         return True
     for c in s:
         if not c.isspace():
@@ -25,35 +30,52 @@ def miss_line(s):
     return True
 
 
-def menu():
-    message.menu()
-    while True:  # for i in range(10)
-        message.enter_the_file()
-        file = input().strip()
-        if file in ["0", "exit", "quit"]:
-            message.goodbye()
-            return
-        elif file in ["f1", "info"]:
-            message.helpmsg()
-        else:
-            cards = get_pack(file)
-            if cards:
-                if len(cards):
-                    message.scanned_successfully(len(cards), file)
-                    mode.setmode(cards)
-                else:
-                    message.file_is_empty(file)
-
-
-def get_pack(file):
-    cards = []
-    try:
-        for s in open(file):
-            if not miss_line(s):
-                cards.append(Cardtype(s))
-            if s[0] == '!':
-                break
-    except OSError:
-        message.file_not_found(file)
+def open_file():
+    message.enter_the_file()
+    inp = input()
+    if inp in ["exit", "quit"]:
         return None
+    
+    global last_pack
+    if inp in ["last"]:
+        print("Your last pack: ", last_pack)
+        inp = input()
+    file = path + inp
+    while True:
+        try:
+            cards = scan_file(file)
+            if not cards:
+                raise RuntimeError
+        except OSError:
+            message.file_not_found(file)
+            file = path + input()
+        except UnicodeDecodeError:
+            message.incorrect_encoding()
+            file = path + input()
+        except RuntimeError:
+            message.file_is_empty(file)
+        else:
+            break
+    last_pack = inp
+    return cards
+
+
+def scan_file(file):
+    lines = None
+    for f in formats:
+        try:
+            lines = open(file+f, "r")
+        except OSError:
+            pass
+        else:
+            break
+    else:
+        raise OSError
+
+    cards = []
+    for l in lines:
+        if l[0] == '!':
+            break
+        if not miss_line(l):
+            cards.append(Cardtype(l))
     return cards

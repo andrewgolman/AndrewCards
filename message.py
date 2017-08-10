@@ -2,11 +2,11 @@ dot_string = "." * 40
 
 
 def card_back(s):
-    print(" - ", s)
+    print(" -", s)
 
 
 def card_front(n, s):
-    print(n, ". ", s)
+    print(n, ". ", s, sep="", end=" ")
 
 
 def card_shifted(s):
@@ -19,27 +19,26 @@ def choose_answer():
 
 def choose_language(a,  b):
     print("Choose the language")
-    print("1. as ", b)
-    print("2. as ", a)
+    print("1. as", b)
+    print("2. as", a)
 
 
 def choose_mode():
     print("Choose the mode.")
     print("1. Reviewing")
     print("2. Learning")
-    print("3. Test")
-    print("4. Constructing")
-    print("5. Retelling")
-    print("6. Find out more...")
 
 
 def choose_range(a, b):
-    print("Choose range within ", a, "-", b)
+    print("Choose range within", a, "-", b, ".")
+    print("Please, separate numbers with a new line.")
+    print("Type '0' to choose all the cards.")
 
 
 def enter_the_file():
-    print("""Enter the file name. Please, make sure that the file contains only UTF-8 \n,
-        symbols, otherwise it may be displayed incorrectly. TXT and DOC files are available.""")
+    print("Enter the file name. Please, make sure that the file contains")
+    print("only UTF-8 symbols, otherwise it may be displayed incorrectly.")
+    print("TXT and DOC files are available.")
     print("Enter '0' to quit.")
     print("Enter 'f1' to get more details.")
 
@@ -49,20 +48,20 @@ def file_is_empty(s):
 
 
 def file_not_found(s):
-    print("File '", s, "' is missing in the directory. Enter another name")
-
-
-def goodbye():
-    print("Thanks for using AndrewCards4.0! Keep learning the language:)")
+    print("Can't find '", s, "' in the directory. Please, enter another name")
 
 
 def helpmsg():
-    print("""Unfortunately, there is no information available now. Please, contact the\n
+    print("""Unfortunately, there is no information available now. Please, contact the
          "developers on andrewsgolman@gmail.com to get more details.""")
 
 
+def incorrect_encoding():
+    print("Can't decode file. Please, covert it to Unicode.")
+
+
 def incorrect_command():
-    print("Incorrect_instruction!")
+    print("Unexpected instruction. Please, try again.")
 
 
 def learn_mode_intro():
@@ -70,6 +69,7 @@ def learn_mode_intro():
 
 
 def learn_mode_legend():
+    print()
     print("0. Default")
     print("-1. Switch the language.")
     print("-2. Mix the cards.")
@@ -78,15 +78,15 @@ def learn_mode_legend():
 
 
 def menu():
-    print("\n\nMENU")
+    print()
+    print("MENU")
 
+
+def mode_finished():
+    print("End mode.\n")
 
 def noans_mode_intro():
     print("Constructing mode selected")
-
-
-def new_line():
-    print()
 
 
 def pack_completed():
@@ -94,7 +94,7 @@ def pack_completed():
 
 
 def previous_answer():
-    print("\t\t prev:  ")
+    print("\n prev:", end=" ")
 
 
 def review_mode_intro():
@@ -102,10 +102,11 @@ def review_mode_intro():
 
 
 def review_mode_legend():
+    print()
     print("1. Right answer")
     print("2. Wrong answer")
-    print("-1. Quit")
     print("-2. Change the language")
+    print("-9. Quit")
 
 
 def right():
@@ -116,18 +117,15 @@ def right_answers_number(a, b):
     print("Right answers: ", a, " / ", b)
 
 
-def scanned_successfully(a, s):
-    print(a, " words from ", s, " are scanned.")
-
-
 def test_mode():
+    print()
     print("-1. Quit")
     print("-2. Switch the language")
     print("Enter Your answer")
 
 
-def welcome():
-    print("Welcome to AndrewCards4.3! With this application You can learn and review\nforeign words and phases!")
+def try_again():
+    print("Do it once again?")
 
 
 def wrong(a):
