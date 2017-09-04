@@ -1,81 +1,63 @@
+"""
+
+Data reading library for the project.
+
+Implements class Cardtype - for double-sided cards with words/phrases.
+
+Functions: parse_file, takes 1 string argument with file path
+
+"""
+
+
 import message
 from config import path
 
 formats = ["", ".txt", ".doc"]
 last_pack = "No pack chosen"
+separators = ["- ", "— ", "– "]
 
-# TODO ответ появляется при incorrect instruction
 
 class Cardtype:
     def __init__(self, s):
-        s = s.replace("- ", "\t")
-        s = s.replace("— ", "\t")
-        s = s.replace("– ", "\t")
+        for sep in separators:
+            s = s.replace(sep, '\t')
         self.front = s.split("\t")[0].strip()
-        try:
-            self.back = s.split("\t")[1].strip()
-        except IndexError:
-            self.back = ""
+        s_split = s.split("\t")
+        self.front = s_split[0].strip()
+        self.back = "- ".join(s_split[1:]).strip() if len(s_split) > 1 else ""
 
     def side(self, b):
         return self.front if b else self.back
 
 
-def miss_line(s):
-    if s[0] == "/":
-        return True
-    for c in s:
-        if not c.isspace():
-            return False
-    return True
-
-
-def open_file():
-    message.enter_the_file()
-    inp = input()
-    if inp in ["exit", "quit"]:
-        return None
-    
-    global last_pack
-    if inp in ["last"]:
-        print("Your last pack: ", last_pack)
-        inp = input()
-    file = path + inp
-    while True:
-        try:
-            cards = scan_file(file)
-            if not cards:
-                raise RuntimeError
-        except OSError:
-            message.file_not_found(file)
-            file = path + input()
-        except UnicodeDecodeError:
-            message.incorrect_encoding()
-            file = path + input()
-        except RuntimeError:
-            message.file_is_empty(file)
-        else:
-            break
-    last_pack = inp
-    return cards
-
-
-def scan_file(file):
-    lines = None
+def get_file(file_name):
+    file = None
     for f in formats:
         try:
-            lines = open(file+f, "r")
+            file = open(path + file_name + f, "r")
         except OSError:
             pass
         else:
             break
-    else:
-        raise OSError
+    return file
 
+
+def parse_file(file_name):
+    file = get_file(file_name)
+    if not file:
+        message.file_not_found(file_name)
+        return None
+    lines = file.readlines()
     cards = []
     for l in lines:
         if l[0] == '!':
             break
-        if not miss_line(l):
+        if l[0] != '/' and l.strip():
             cards.append(Cardtype(l))
+    global last_pack
+    last_pack = file_name
     return cards
+
+
+def get_last():
+    print(last_pack)

@@ -1,7 +1,12 @@
+""""Script"""
+
 from utils import getfile
 import re
 
+
 def extract():
+    """Extracts from a given file all substrings between brackets
+        Data is taken from compilation.txt ."""
     file = open("compilation.txt", "r")
     print("Output name:")
     name = input()

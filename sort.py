@@ -1,7 +1,14 @@
 from utils import getfile
 from config import path
 
+
 def sort(name, dir, file, number, size):
+    """
+    Splits a given file (path+dir+name) to a few files, each of them contains a given certain number of not empty
+    strings (size).
+    Enumeration of files starts with arg number.
+    Args: name, dir, file - string, number, size - int.
+    """
     while True:
         out = open(path + "/" + dir + "/" + name + str(number), "a")
         for i in range(size):

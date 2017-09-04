@@ -1,7 +1,21 @@
+"""
+
+Exercise library for the project.
+
+Review, learn and no-answer mode are implemented. This file also contains a function that logs cards reviewed
+into a certain file.
+
+Functions: setmode, takes 1 argument with list of CardType objects (defined in cards.py).
+
+"""
+
+
 import message
 import random
+from config import path, input
 
 quits = ["-9", "exit", "quit"]
+helps = ["h", "help", "-help"]
 
 
 def setmode(cards):
@@ -17,27 +31,70 @@ def setmode(cards):
             test(cards)
         elif mode in ["4", "c", "constructing", "na", "noans"]:
             noans(cards)
+        elif mode in helps:
+            message.help_choose_mode()
+            message.choose_mode()
+            continue
+        elif mode in quits:
+            return
         else:
             message.incorrect_command()
             continue
         message.mode_finished()
-        break
+        return
+
+
+def choose_range(cards):
+    message.choose_range(1, len(cards))
+    while True:
+        try:
+            range = input().strip()
+            begin = range.split(" ")[0]
+            if not begin:
+                break
+            if begin in quits:
+                return None
+            begin = int(begin)
+            if begin < 0:
+                raise ValueError
+            if begin:
+                end = int(range.split(" ")[1])
+            if end < begin:
+                raise ValueError
+        except (ValueError, IndexError):
+            message.incorrect_command()
+        else:
+            break
+    if begin:
+        ch_cards = cards[begin-1:end]
+    else:
+        ch_cards = cards
+    return ch_cards
+
+
+def choose_lang(card):
+    message.choose_language(card.front, card.back)
+    while True:
+        lang = input().split(" ")[0].strip()
+        if lang in ["1", "9", "first"]:
+            lang = False
+        elif lang in ["2", "0", "second"]:
+            lang = True
+        elif lang in helps:
+            message.help_not_available()
+            continue
+        elif lang in quits:
+            return None
+        else:
+            continue
+        return lang
 
 
 def review(cards):
     message.review_mode_intro()
-    message.choose_language(cards[0].back, cards[0].front)
-    while True:
-        lang = input().split(" ")[0].strip()
-        if lang in ["1", "9", "first"]:
-            lang = True
-        elif lang in ["2", "0", "second"]:
-            lang = False
-        elif lang in quits:
-            return
-        else:
-            continue
-        break
+    lang = choose_lang(cards[0])
+    if lang is None:
+        return
     message.review_mode_legend()
 
     i = 1
@@ -50,17 +107,23 @@ def review(cards):
         message.card_front(i, card.side(lang))
         message.previous_answer()
         user = input().strip()
-        message.card_shifted(card.side(not lang))
         while True:
             try:
                 if user in quits:
                     return
-                elif user in ["-2", "lang", "change language"]:
+
+                if user in helps:
+                    message.help_review_mode()
+                    message.card_front(i, card.side(lang))
+                    message.previous_answer()
+                    user = input().strip()
+                    continue
+                elif user in ["-1", "lang", "change language"]:
                     lang = not lang
                     cards.append(card)
                 elif not prev_card:
                     pass
-                elif (user in ["right", ""] or int(user) % 2):
+                elif user in ["right", ""] or int(user) % 2:
                     right_answers += 1
                 elif not (int(user) % 2):
                     cards.append(prev_card)
@@ -74,35 +137,8 @@ def review(cards):
                 message.review_mode_legend()
                 user = input().strip()
             else:
+                message.card_shifted(card.side(not lang))
                 break
-
-
-def choose_range(cards):
-    message.choose_range(1, len(cards))
-    begin, end = 0, 0
-    while True:
-        try:
-            begin = input().strip()
-            if not begin:
-                break
-            if begin in quits:
-                break
-            begin = int(begin)
-            if begin < 0:
-                raise ValueError
-            if begin:
-                end = int(input().strip())
-        except ValueError:
-            message.incorrect_command()
-            for card in cards:
-                print(card.front, "-", card.back)
-        else:
-            break
-    if begin:
-        ch_cards = cards[begin-1:end]
-    else:
-        ch_cards = cards
-    return ch_cards
 
 
 def learn(cards):
@@ -126,22 +162,29 @@ def learn(cards):
         try:
             if user in quits:
                 break
+            elif user in helps:
+                message.help_learn_mode()
             elif user in ["-1", "lang"]:
                 lang = not lang
-            elif user in ["-2", "rand"]:
+                show = []
+            elif user in ["-2", "rand", "mix"]:
                 random.shuffle(ch_cards)
                 show = []
             elif user in ["-3", "all"]:
                 show = list(range(len(ch_cards)))
             elif user in ["-4", "range"]:
+                lang = True
                 ch_cards = choose_range(cards)
+                if not ch_cards:
+                    return
                 show = []
-            elif user in ["+", "n", "next"]:
+            elif user in ["+", "n", "]", "next"]:
                 if len(show) == 1:
                     show[0] += 1
+                    show %= len(cards)
                 elif not show:
                     show = [0]
-            elif user in ["-", "p", "prev"]:
+            elif user in ["-", "p", "[", "prev"]:
                 if len(show) == 1:
                     show[0] -= 1
                 elif not show:
@@ -158,16 +201,9 @@ def test(cards):
 
 def noans(cards):
     while True:
-        message.choose_language(cards[0].front, cards[0].back)
-        while True:
-            lang = input().split(" ")[0].strip()
-            if lang in ["1", "9", "first"]:
-                lang = False
-            elif lang in ["2", "0", "second"]:
-                lang = True
-            else:
-                continue
-            break
+        lang = choose_lang(cards[0])
+        if lang is None:
+            return
         random.shuffle(cards)
         message.noans_mode_intro()
         i = 1
@@ -195,9 +231,9 @@ def noans(cards):
 
 def log_mistake(card):
     try:
-        file = open("cards/verbessern.txt", "r")
+        file = open(path + "verbessern.txt", "r")
     except Exception:
         file = None
     if not file or card not in file:
-        file = open("cards/verbessern.txt", "a")
+        file = open(path + "verbessern.txt", "a")
         file.write(card.front + " - " + card.back + "\n")

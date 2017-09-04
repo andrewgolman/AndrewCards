@@ -1,3 +1,14 @@
+"""
+
+This script extracts from the certain file all strings and sorts them into 2 groups of card-pack-files that can be read by functions in cards.py
+
+if "►" symbol is in the string, it will be written into a p-number file,
+otherwise in w-number file.
+
+Files will be separated automatically into packs with size 20 or 30.
+
+"""
+
 from utils import getfile
 from config import path
 from config import compilation_file
@@ -39,4 +50,4 @@ w_file = open("../grundkurs/" + name + "w", "r")
 sort(name="p", dir="grundkurs", number=p_number, file=p_file, size=30)
 sort(name="w", dir="grundkurs", number=w_number, file=w_file, size=20)
 
-print ("Completed")
+print("Completed")
