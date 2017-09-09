@@ -1,4 +1,10 @@
-path = "../"
+path = "./"
 compilation_file = "compilation.txt"
-input = input
-output = print
+mode = 'console'
+
+if mode == 'console':
+    input = input
+    output = print
+
+else:
+    print("RUN MODE ERROR")

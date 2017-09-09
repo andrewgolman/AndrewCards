@@ -1,4 +1,5 @@
 .DS_Store
+.idea/
 bot/token
 __pycache__/
 compilation.txt

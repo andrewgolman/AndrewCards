@@ -59,6 +59,8 @@ def choose_range(cards):
                 raise ValueError
             if begin:
                 end = int(range.split(" ")[1])
+            else:
+                end = len(cards)
             if end < begin:
                 raise ValueError
         except (ValueError, IndexError):
@@ -181,7 +183,7 @@ def learn(cards):
             elif user in ["+", "n", "]", "next"]:
                 if len(show) == 1:
                     show[0] += 1
-                    show %= len(cards)
+                    show[0] %= len(cards)
                 elif not show:
                     show = [0]
             elif user in ["-", "p", "[", "prev"]:

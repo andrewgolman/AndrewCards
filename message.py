@@ -170,7 +170,7 @@ Hello   hallo
 world   Welt
 card    Karte
 
-Please, make sure that all the symbols in your file are Unicode symbols - otherwise they may be displayed incorrectly
+Please, make sure that encoding of your file is Unicode - otherwise they may be displayed incorrectly
  or you may get a file-reading error.
 
 WHERE TO SAVE THESE FILES?
