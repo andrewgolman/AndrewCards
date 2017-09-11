@@ -4,142 +4,148 @@ Provides communication with a user in exercises.
 
 """
 
+from app_io import app_output
+from config import mode
 
-dot_string = "." * 40
+dot_string = "." * 40 if mode == 'console' else "Answer: "
 
 
 def card_back(s):
-    print(" -", s)
+    app_output(" -" + s)
 
 
 def card_front(n, s):
-    print(n, ". ", s, sep="", end=" ")
+    app_output(str(n) + ". " + s, end=" ")
 
 
 def card_shifted(s):
-    print(dot_string, s)
+    app_output(dot_string + s)
 
 
 def choose_answer():
-    print("Answer: ")
+    app_output("Answer: ")
 
 
 def choose_language(a,  b):
-    print("Type '1' or '2' to choose the language to be used to ask questions")
-    print("1. as", b)
-    print("2. as", a)
+    app_output("Type '1' or '2' to choose the language to be used to ask questions")
+    app_output("1. as " + str(b))
+    app_output("2. as " + str(a))
 
 
 def choose_mode():
-    print("Choose the mode.")
-    print("1. Reviewing")
-    print("2. Learning")
+    app_output("Choose the mode.")
+    app_output("1. Reviewing")
+    app_output("2. Learning")
 
 
 def choose_range(a, b):
-    print("Choose range within", a, "-", b, ".")
-    print("Enter two numbers in the same line, separated with space.")
-    print("Enter '0' to choose all the cards.")
+    app_output("Choose range within " + str(a) + " - " + str(b) + ".")
+    app_output("Enter two numbers in the same line, separated with space.")
+    app_output("Enter '0' to choose all the cards.")
 
 
 def enter_the_file():
-    print()
-    print("MAIN MENU")
-    print("Enter the path to the file.")
-    print("Type '-help' to see, which files can be used.")
-    print("Enter '-quit' to quit.")
+    app_output()
+    app_output("MAIN MENU")
+    app_output("Enter the path to the file.")
+    app_output("Type '-help' to see, which files can be used.")
+    app_output("Enter '-quit' to quit.")
 
 
 def file_is_empty(s):
-    print("File '", s, "' is empty!")
+    app_output("File '" + s + "' is empty!")
 
 
 def file_not_found(s):
-    print("Can't find '", s, "' in the directory. Please, enter another name")
+    app_output("Can't find '" + s + "' in the directory. Please, enter another name")
 
 
 def incorrect_encoding():
-    print("Can't decode file. Please, covert it to Unicode.")
+    app_output("Can't decode file. Please, covert it to Unicode.")
 
 
 def incorrect_command():
-    print("Incorrect instruction. Please, try again.")
+    app_output("Incorrect instruction. Please, try again.")
 
 
 def help_not_available():
-    print("No further help available")
+    app_output("No further help available")
 
 
 def learn_mode_intro():
-    print("Learn mode selected")
+    app_output("Learn mode selected")
 
 
 def learn_mode_legend():
-    print()
-    print("-1. Switch the language.")
-    print("-2. Mix the cards.")
-    print("-3. Show all translations.")
-    print("-9. Quit.\n")
+    app_output()
+    app_output("-1. Switch the language.")
+    app_output("-2. Mix the cards.")
+    app_output("-3. Show all translations.")
+    app_output("-9. Quit.\n")
 
 
 def menu():
-    print()
-    print("MENU")
+    app_output()
+    app_output("MENU")
 
 
 def mode_finished():
-    print("End mode.\n")
+    app_output("End mode.\n")
 
 
 def noans_mode_intro():
-    print("Constructing mode selected")
+    app_output("Constructing mode selected")
+
+
+def number_of_cards(n):
+    app_output("The pack contains " + str(n) + " cards")
 
 
 def pack_completed():
-    print("The pack is completed!")
+    app_output("The pack is completed!")
 
 
 def previous_answer():
-    print("\n prev:", end=" ")
+    app_output("\n prev:", end=" ")
 
 
 def review_mode_intro():
-    print("Review mode selected")
+    app_output("Review mode selected")
 
 
 def review_mode_legend():
-    print()
-    print("1. Right answer")
-    print("2. Wrong answer")
-    print("-2. Change the language")
-    print("-9. Quit")
+    app_output()
+    app_output("1. Right answer")
+    app_output("2. Wrong answer")
+    app_output("-2. Change the language")
+    app_output("-9. Quit")
 
 
 def right():
-    print("Right")
+    app_output("Right")
 
 
 def right_answers_number(a, b):
-    print("Right answers: ", a, " / ", b)
+    app_output("Right answers: " + str(a) + " / " + str(b))
 
 
 def test_mode():
-    print()
-    print("-1. Quit")
-    print("-2. Switch the language")
-    print("Enter Your answer")
+    app_output()
+    app_output("-1. Quit")
+    app_output("-2. Switch the language")
+    app_output("Enter Your answer")
 
 
 def try_again():
-    print("Do it once again?")
+    app_output("Do it once again?")
 
 
 def wrong(a):
-    print("Wrong. Right variant - ", a)
+    app_output("Wrong. Right variant - " + str(a))
 
 
 def helpmsg():
-    print("""
+    app_output("""
 Available commands:
     '-last'
     ...................... see the path of the last chosen file
@@ -160,10 +166,10 @@ Example of a correct input file:
 
   Hello - hallo
   world - Welt
-  /I don't want you to read this line
+  /I don't want you to scan this line
   card    Karte
   !
-  I can write something here whatever I want.
+  I can write here whatever I want.
 
 3 cards will be scanned here:
 Hello   hallo
@@ -197,7 +203,7 @@ Please, follow the given instructions carefully so the app is able to parse your
 
 
 def help_choose_mode():
-    print("""
+    app_output("""
 2 modes are ready now:
 
 REVIEW MODE:
@@ -216,7 +222,7 @@ LEARN MODE:
 
 
 def help_review_mode():
-    print("""
+    app_output("""
 Available commands:
     ENTER or any odd number or 'right'
     ...................... My last answer was right (simply proceed to the next card)
@@ -232,7 +238,7 @@ Available commands:
 
 
 def help_learn_mode():
-    print("""
+    app_output("""
 Available commands:
     Any number n
     ...................... See the back side of the card #n

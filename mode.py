@@ -12,17 +12,18 @@ Functions: setmode, takes 1 argument with list of CardType objects (defined in c
 
 import message
 import random
-from config import path, input
+from config import path
+from app_io import app_input
 
 quits = ["-9", "exit", "quit"]
-helps = ["h", "help", "-help"]
+helps = ["h", "help", "-help", "/help"]
 
 
 def setmode(cards):
-    print("The pack contains ", len(cards), "cards")
+    message.number_of_cards(len(cards))
     message.choose_mode()
     while True:
-        mode = input().strip()
+        mode = app_input().strip()
         if mode in ["1", "r", "review"]:
             review(cards)
         elif mode in ["2", "l", "learn"]:
@@ -48,7 +49,7 @@ def choose_range(cards):
     message.choose_range(1, len(cards))
     while True:
         try:
-            range = input().strip()
+            range = app_input()
             begin = range.split(" ")[0]
             if not begin:
                 break
@@ -77,7 +78,7 @@ def choose_range(cards):
 def choose_lang(card):
     message.choose_language(card.front, card.back)
     while True:
-        lang = input().split(" ")[0].strip()
+        lang = app_input().split(" ")[0].strip()
         if lang in ["1", "9", "first"]:
             lang = False
         elif lang in ["2", "0", "second"]:
@@ -108,7 +109,7 @@ def review(cards):
     for card in cards:
         message.card_front(i, card.side(lang))
         message.previous_answer()
-        user = input().strip()
+        user = app_input()
         while True:
             try:
                 if user in quits:
@@ -118,7 +119,7 @@ def review(cards):
                     message.help_review_mode()
                     message.card_front(i, card.side(lang))
                     message.previous_answer()
-                    user = input().strip()
+                    user = app_input()
                     continue
                 elif user in ["-1", "lang", "change language"]:
                     lang = not lang
@@ -137,7 +138,7 @@ def review(cards):
             except ValueError:
                 message.incorrect_command()
                 message.review_mode_legend()
-                user = input().strip()
+                user = app_input()
             else:
                 message.card_shifted(card.side(not lang))
                 break
@@ -160,7 +161,7 @@ def learn(cards):
             else:
                 print()
 
-        user = input().strip()
+        user = app_input()
         try:
             if user in quits:
                 break
@@ -211,7 +212,7 @@ def noans(cards):
         i = 1
         for card in cards:
             message.card_front(i, card.side(lang))
-            user = input().strip()
+            user = app_input()
             if user in ["lang"]:
                 lang = not lang
             elif user in ["answer"]:
@@ -226,7 +227,7 @@ def noans(cards):
             message.card_back(card.back)
             i += 1
         message.try_again()
-        user = input().strip()
+        user = app_input()
         if user[0] not in ["y", "1", "9"]:
             break
 
