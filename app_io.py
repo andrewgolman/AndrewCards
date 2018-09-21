@@ -5,7 +5,7 @@ if mode == 'console':
         return input().strip()
 
     def console_output(*args, **kwargs):
-        print(*args, sep='', *kwargs)
+        print(*args, sep='', **kwargs)
 
     app_input = console_input
     app_output = console_output

@@ -11,6 +11,7 @@ Functions: parse_file, takes 1 string argument with file path
 
 import message
 from config import path
+from app_io import app_output
 
 formats = ["", ".txt", ".doc"]
 last_pack = "No pack chosen"
@@ -60,4 +61,4 @@ def parse_file(file_name):
 
 
 def get_last():
-    print(last_pack)
+    app_output(last_pack)

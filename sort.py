@@ -1,6 +1,7 @@
 from utils import getfile
 from config import path
 
+path = ".."
 
 def sort(name, dir, file, number, size):
     """

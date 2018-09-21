@@ -25,8 +25,8 @@ p_number = int(input().strip())
 print("Enter w-file number:")
 w_number = int(input().strip())
 
-out_p = open("../grundkurs/" + name + "p", "a")
-out_w = open("../grundkurs/" + name + "w", "a")
+out_p = open("../gk/" + name + "p", "a")
+out_w = open("../gk/" + name + "w", "a")
 p = 0
 w = 0
 
@@ -45,9 +45,9 @@ for line in file:
 print(p, " phrases scanned")
 print(w, " words scanned")
 
-p_file = open("../grundkurs/" + name + "p", "r")
-w_file = open("../grundkurs/" + name + "w", "r")
-sort(name="p", dir="grundkurs", number=p_number, file=p_file, size=30)
-sort(name="w", dir="grundkurs", number=w_number, file=w_file, size=20)
+p_file = open("../gk/" + name + "p", "r")
+w_file = open("../gk/" + name + "w", "r")
+sort(name="p", dir="gk", number=p_number, file=p_file, size=30)
+sort(name="w", dir="gk", number=w_number, file=w_file, size=20)
 
 print("Completed")

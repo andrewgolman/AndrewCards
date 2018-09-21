@@ -1,5 +1,5 @@
 path = "../"
 compilation_file = "compilation.txt"
-mode = 'server'
+mode = 'console'
 port = 8881
 

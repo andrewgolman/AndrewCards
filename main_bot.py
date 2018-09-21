@@ -10,74 +10,92 @@ from telegram import TelegramError
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove)
 
+try:
 
-token = open("main_bot_token", "r").read().strip()
+    token = open("main_bot_token", "r").read().strip()
 
-sock = socket()
+    sock = socket()
 
-
-def telegram_error_handler(bot, update, err):
-    traceback.print_exception(TelegramError, err, None)
-
-
-def check_access(update):
-    if update.message.from_user.id != 300113793:
-        update.message.reply_text("Access denied")
-        return False
-    return True
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        filename="logs",
+        filemode='a'
+    )
 
 
-def start(bot, update):
-    if not check_access(update):
-        return
-    global sock
-    s = sock.recv(1024)
-    update.message.reply_text(s.decode())
+    def telegram_error_handler(bot, update, err):
+        traceback.print_exception(TelegramError, err, None)
 
 
-def help(bot, update):
-    if not check_access(update):
-        return
-    global sock
-    sock.send("-help".encode())
-    s = sock.recv(1024)
-    update.message.reply_text(s.decode())
+    def check_access(update):
+        if update.message.from_user.id != 300113793:
+            update.message.reply_text("Access denied")
+            return False
+        return True
 
 
-def app_get(bot, update):
-    if not check_access(update):
-        return
-    s = update.message.text
-    global sock
-    sock.send(s.encode())
-    s = sock.recv(1024)
-    update.message.reply_text(s.decode(), reply_markup=ReplyKeyboardMarkup([['1', '0', '-1', '-2', '-9']]))
-
-handlers = [
-    CommandHandler("start", start),
-    CommandHandler("help", start),
-    MessageHandler(Filters.text, app_get),
-]
-
-updates = []
+    def start(bot, update):
+        if not check_access(update):
+            return
+        global sock
+        subprocess.Popen(["python3", "main.py"])
+        sleep(1)
+        sock.connect(('localhost', port))
+        s = sock.recv(1024)
+        update.message.reply_text(s.decode())
 
 
-def main():
+    def help(bot, update):
+        if not check_access(update):
+            return
+        global sock
+        sock.send("-help".encode())
+        s = sock.recv(1024)
+        update.message.reply_text(s.decode())
 
-    subprocess.Popen(["python3", "main.py"])
-    sleep(1)
-    sock.connect(('localhost', port))
 
-    updater = Updater(token=token)
-    dp = updater.dispatcher
+    def app_get(bot, update):
+        if not check_access(update):
+            return
+        s = update.message.text
+        global sock
+        sock.send(s.encode())
+        s = sock.recv(1024)
+        update.message.reply_text(s.decode(), reply_markup=ReplyKeyboardMarkup([['1', '2', '-1', '-9', '[', ']']]))
 
-    for handler in handlers:
-        dp.add_handler(handler)
+    handlers = [
+        CommandHandler("start", start),
+        CommandHandler("help", start),
+        MessageHandler(Filters.text, app_get),
+    ]
 
-    updater.start_polling()
-    updater.idle()
+    updates = []
 
-    sock.close()
 
-if __name__ == '__main__':
-    main()
+    def main():
+
+        updater = Updater(token=token)
+        dp = updater.dispatcher
+
+        for handler in handlers:
+            dp.add_handler(handler)
+
+        try:
+            updater.start_polling()
+            updater.idle()
+        except Exception as e:
+            open("error.log", "a").write(str(e))
+
+        sock.close()
+
+    if __name__ == '__main__':
+        main()
+
+    open("error.log", "a").write("Completed")
+
+except Exception as e:
+    open("error.log", "a").write(str(e))
+
+
+    

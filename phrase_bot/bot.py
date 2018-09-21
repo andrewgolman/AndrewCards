@@ -8,12 +8,12 @@ from telegram import TelegramError
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from telegram import (ReplyKeyboardMarkup, ReplyKeyboardRemove)
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+# logging.basicConfig(
+#     level=logging.DEBUG,
+#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+# )
 
-token = open("token", "r").read().strip()
+token = open("phrase_bot/token", "r").read().strip()
 
 
 def telegram_error_handler(bot, update, err):
@@ -87,7 +87,7 @@ def manager():
 
 
 def sending(update):
-    data = open("./cards/hp_bot.txt", "r").readlines()
+    data = open("../hp_bot.txt", "r").readlines()
     for i in range(3):
         n = randint(0, len(data))
         #for u in updates:
