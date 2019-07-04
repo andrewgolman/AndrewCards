@@ -1,67 +1,39 @@
-"""
-
-Provides communication with a user in exercises.
-
-"""
-
-from app_io import app_output
+from set_io import app_output
 from config import mode
 
 dot_string = "." * 40 if mode == 'console' else "Answer: "
 
 
 def card_back(s):
-    app_output(" -" + s)
+    app_output(f" - {s}")
 
 
 def card_front(n, s):
-    app_output(str(n) + ". " + s, end=" ")
+    app_output(f"{n}. {s}", end=" ")
 
 
 def card_shifted(s):
     app_output(dot_string + s)
 
 
-def choose_answer():
-    app_output("Answer: ")
-
-
 def choose_language(a,  b):
     app_output("Type '1' or '2' to choose the language to be used to ask questions")
-    app_output("1. as " + str(b))
-    app_output("2. as " + str(a))
+    app_output(f"1. as {b}")
+    app_output(f"2. as {a}")
 
 
 def choose_mode():
     app_output("Choose the mode.")
     app_output("1. Reviewing")
     app_output("2. Learning")
+    app_output("3. Random picking")
+    app_output("4. No-answer reviewing")
 
 
 def choose_range(a, b):
-    app_output("Choose range within " + str(a) + " - " + str(b) + ".")
+    app_output(f"Choose range within {a} - {b}")
     app_output("Enter two numbers in the same line, separated with space.")
     app_output("Enter '0' to choose all the cards.")
-
-
-def enter_the_file():
-    app_output()
-    app_output("MAIN MENU")
-    app_output("Enter the path to the file.")
-    app_output("Type '-help' to see, which files can be used.")
-    app_output("Enter '-quit' to quit.")
-
-
-def file_is_empty(s):
-    app_output("File '" + s + "' is empty!")
-
-
-def file_not_found(s):
-    app_output("Can't find '" + s + "' in the directory. Please, enter another name")
-
-
-def incorrect_encoding():
-    app_output("Can't decode file. Please, covert it to Unicode.")
 
 
 def incorrect_command():
@@ -89,16 +61,12 @@ def menu():
     app_output("MENU")
 
 
-def mode_finished():
-    app_output("End mode.\n")
-
-
 def noans_mode_intro():
     app_output("Constructing mode selected")
 
 
 def number_of_cards(n):
-    app_output("The pack contains " + str(n) + " cards")
+    app_output(f"The pack contains {n} cards")
 
 
 def pack_completed():
@@ -126,7 +94,7 @@ def right():
 
 
 def right_answers_number(a, b):
-    app_output("Right answers: " + str(a) + " / " + str(b))
+    app_output(f"Right answers: {a}/{b}")
 
 
 def test_mode():
@@ -140,19 +108,15 @@ def try_again():
     app_output("Do it once again?")
 
 
-def wrong(a):
-    app_output("Wrong. Right variant - " + str(a))
+def wrong(s):
+    app_output(f"Wrong. Right answer - {s}")
 
 
-def helpmsg():
-    app_output("""
+helpmsg = """
 Available commands:
-    '-last'
-    ...................... see the path of the last chosen file
-    '-help'
-    ...................... see this message
-    '-quit'
-    ...................... leave the app
+    -last: see the path of the last chosen file
+    -help: see this message
+    -quit: leave the app
 
 WHICH FILES TO USE?
 
@@ -199,12 +163,12 @@ IT'S NOT VERY USER-FRIENDLY!
 Please, follow the given instructions carefully so the app is able to parse your inputs. Most commands are simple,
  you will get used to the format soon and won't get many "Incorrect input" messages.
 
-""")
+"""
 
 
 def help_choose_mode():
     app_output("""
-2 modes are ready now:
+4 modes are ready now:
 
 REVIEW MODE:
     You are holding a pile of cards. Shuffle them, take the topmost card and try to remember, what is written
@@ -217,6 +181,12 @@ REVIEW MODE:
 LEARN MODE:
     You have put a few cards on the table. You can take any of them and see, what's written on the other side. Try
      to remember all the cards!
+     
+RANDOM MODE:
+    Random card on each step
+    
+NO ANSWER REVIEW:
+    Same as review, but no answers are shown
 
 """)
 
@@ -258,3 +228,12 @@ Available commands:
     ...................... See this message
 """)
 
+
+menu_msg = """
+
+MAIN MENU
+Enter the path to the file.
+[-quit, -q]: quit
+[-last, -l]: last opened file
+[-help, -h]: help
+"""

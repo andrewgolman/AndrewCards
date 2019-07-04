@@ -1,53 +1,93 @@
-"""
+import train
+from set_io import app_input, app_output
+from message import helpmsg, menu_msg
 
-Main script, runs the exercises part of the application.
+import argparse
 
-"""
 
-import cards
-import mode
-from app_io import app_input, app_output
-from sys import stderr
-from message import helpmsg, enter_the_file
-import logging
+class Cardtype:
+    separators = ["- ", "— ", "– "]
 
-# logging.basicConfig(
-#     level=logging.DEBUG,
-#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-#     filename="logs_app",
-#     filemode='a'
-# )
+    def __init__(self, s):
+        for sep in Cardtype.separators:
+            s = s.replace(sep, '\t')
 
-def main():
+        s = s.split("\t", maxsplit=1)
+        self.front = s[0].strip()
+        if len(s) > 1:
+            self.back = s[1].strip()
+        else:
+            self.back = ""
+
+    def side(self, b):
+        return self.front if b else self.back
+
+
+def open_file(file_name):
+    formats = ["", ".txt", ".doc"]
+    for f in formats:
+        try:
+            return open(file_name + f, "r")
+        except OSError:
+            pass
+    return None
+
+
+def parse_file(file):
+    lines = file.readlines()
+    cards = []
+    for l in lines:
+        if l[0] == '!':
+            break
+        if l[0] != '/' and l.strip():
+            cards.append(Cardtype(l))
+    return cards
+
+
+def main(working_file=None):
     app_output("Welcome to AndrewCards5.0! With this application You can learn and review foreign words and phrases!")
 
+    last_success_file = None
     while True:
         try:
-            enter_the_file()
-            inp = app_input().strip()
-            # if inp == "er":
-            #     raise RuntimeError("1")
-            if inp == "-help":
-                helpmsg()
-            elif inp == "-last":
-                cards.get_last()
-            elif inp == "-quit":
-                break
+            if working_file:
+                file = open_file(working_file)
             else:
-                pack = cards.parse_file(inp)
-                if pack:
-                    mode.setmode(pack)
+                app_output(menu_msg)
+                inp = app_input()
+
+                if inp in ["-h", "-help"]:
+                    app_output(helpmsg)
+                    continue
+                elif inp == ["-l", "-last"]:
+                    app_output(last_success_file)
+                    continue
+                elif inp == ["-q", "-quit"]:
+                    break
+                else:
+                    print(f"OPEN: .{inp}.")
+                    file = open_file(inp)
+                    if not file:
+                        app_output("Can't read file {}".format(inp))
+                        continue
+
+            pack = parse_file(file)
+            if pack:
+                last_success_file = file
+                train.run(pack)
+
+            if working_file:
+                break
+
         except EOFError:
             break
-        except Exception as e:
-            open("error.log", "a").write(str(e) + '\n')
-            app_output("\n An error occurred somewhere, sorry about that. You can continue from MAIN MENU.")
 
     app_output("Thanks for using AndrewCards5.0! Stay tuned and keep learning:)")
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except Exception as e:
-        open("error.log", "a").write(str(e))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file", default=None, nargs="?")
+    args = parser.parse_args()
+    print(args)
+    main(working_file=args.file)
