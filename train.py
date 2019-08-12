@@ -14,6 +14,7 @@ class Mode:
 
 quits = ["-9", "-q", "exit", "quit", "/quit"]
 helps = ["h", "-h", "help", "-help", "/help"]
+display_cmds = ["-5", "d", "display"]
 
 
 def choose_mode():
@@ -94,6 +95,8 @@ def run_review(cards, mode=Mode.REVIEW):
     if lang is None:
         return
 
+    pack = cards
+
     if mode == Mode.RANDOM:  # create bootstrap generator, otherwise just shuffle
         cards = ReturnGenerator(cards)
     elif mode == Mode.SORT:
@@ -113,8 +116,14 @@ def run_review(cards, mode=Mode.REVIEW):
                 if user in quits:
                     return
 
-                if user in helps:
-                    message.help_review_mode()
+                if user in helps + display_cmds:
+                    if user in helps:
+                        message.help_review_mode()
+                    if user in display_cmds:
+                        for i, c in enumerate(pack):
+                            app_output(f"  {i + 1}: {c.front} - {c.back}")
+                        app_output()
+
                     message.card_front(ask_count, card.side(lang))
                     if mode in [Mode.REVIEW, Mode.SORT]:  # ask reaction for the previous card
                         message.previous_answer()

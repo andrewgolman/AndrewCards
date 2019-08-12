@@ -67,7 +67,7 @@ def noans_mode_intro():
 
 
 def number_of_cards(n):
-    app_output(f"The pack contains {n} cards")
+    app_output(f"{n} cards scanned")
 
 
 def pack_completed():
@@ -86,12 +86,9 @@ def review_mode_legend():
     app_output()
     app_output("1. Right answer")
     app_output("2. Wrong answer")
-    app_output("-2. Change the language")
+    app_output("-1. Change the language")
+    app_output("-5. Show all cards")
     app_output("-9. Quit")
-
-
-def right():
-    app_output("Right")
 
 
 def right_answers_number(a, b):
@@ -103,10 +100,6 @@ def test_mode():
     app_output("-1. Quit")
     app_output("-2. Switch the language")
     app_output("Enter Your answer")
-
-
-def try_again():
-    app_output("Do it once again?")
 
 
 def wrong(s):
@@ -201,6 +194,8 @@ Available commands:
     ...................... My last answer was wrong (proceed to the next card and save my wrong answer)
     '-1' or 'lang'
     ...................... Change language
+    '-5' or 'display'
+    ...................... Show all cards
     '-9' or 'quit'
     ...................... Return to main MENU
     'h' or 'help'
