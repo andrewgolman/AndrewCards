@@ -47,7 +47,9 @@ def parse_file(file):
 
 def cards_from_file(file):
     stream = open_file(file)
-    return parse_file(stream)
+    if stream:
+        return parse_file(stream)
+    return []
 
 
 def cards_from_files(files):
