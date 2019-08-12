@@ -9,6 +9,7 @@ class Mode:
     LEARN = 2
     RANDOM = 3
     NOANS = 4
+    SORT = 5
 
 
 quits = ["-9", "-q", "exit", "quit", "/quit"]
@@ -27,6 +28,8 @@ def choose_mode():
             return Mode.RANDOM
         elif inp in ["4", "n", "na", "noans"]:
             return Mode.NOANS
+        elif inp in ["5", "s"]:
+            return Mode.SORT
         elif inp in helps:
             message.help_choose_mode()
             continue
@@ -93,6 +96,8 @@ def run_review(cards, mode=Mode.REVIEW):
 
     if mode == Mode.RANDOM:  # create bootstrap generator, otherwise just shuffle
         cards = ReturnGenerator(cards)
+    elif mode == Mode.SORT:
+        pass
     else:
         random.shuffle(cards)
 
@@ -100,6 +105,7 @@ def run_review(cards, mode=Mode.REVIEW):
         message.card_front(ask_count, card.side(lang))
         if mode == Mode.REVIEW:
             message.previous_answer()
+
         user = app_input()
 
         while True:
@@ -110,7 +116,7 @@ def run_review(cards, mode=Mode.REVIEW):
                 if user in helps:
                     message.help_review_mode()
                     message.card_front(ask_count, card.side(lang))
-                    if mode == Mode.REVIEW:
+                    if mode in [Mode.REVIEW, Mode.SORT]:  # ask reaction for the previous card
                         message.previous_answer()
                     user = app_input()
                     continue
@@ -129,7 +135,7 @@ def run_review(cards, mode=Mode.REVIEW):
                 elif not (int(user) % 2):
                     cards.append(prev_card)  # add wrong answer to the end (ignore the only remaining last wrong answer)
 
-                if ask_count == size:
+                if ask_count == size and mode == Mode.REVIEW:
                     message.right_answers_number(right_answers_count, size-1)
 
                 ask_count += 1
@@ -142,6 +148,12 @@ def run_review(cards, mode=Mode.REVIEW):
             else:
                 if mode != Mode.NOANS:
                     message.card_shifted(card.side(not lang))
+                if mode == Mode.SORT:
+                    app_output("File: ", end="")
+                    user = app_input()
+                    if user and card:
+                        with open(user + ".txt", "a") as file:
+                            file.write(f"{card.front} - {card.back}\n")
                 break
 
 
@@ -202,17 +214,17 @@ def run_learn(cards):
             message.incorrect_command()
 
 
-def run(pack):
-    if not pack:
+def run(cards):
+    if not cards:
         app_output("Pack is empty")
 
-    message.number_of_cards(len(pack))
+    message.number_of_cards(len(cards))
     mode = choose_mode()
     if mode is None:
         return
 
-    if mode in [Mode.REVIEW, Mode.NOANS, Mode.RANDOM]:
-        run_review(pack, mode)
+    if mode in [Mode.REVIEW, Mode.NOANS, Mode.RANDOM, Mode.SORT]:
+        run_review(cards, mode)
 
     if mode == Mode.LEARN:
-        run_learn(pack)
+        run_learn(cards)
