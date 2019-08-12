@@ -30,6 +30,7 @@ def open_file(file_name):
             return open(file_name + f, "r")
         except OSError:
             pass
+    print(f"{file_name}: file not found")
     return None
 
 
@@ -44,14 +45,28 @@ def parse_file(file):
     return cards
 
 
-def main(working_file=None):
-    app_output("Welcome to AndrewCards5.0! With this application You can learn and review foreign words and phrases!")
+def cards_from_file(file):
+    stream = open_file(file)
+    return parse_file(stream)
+
+
+def cards_from_files(files):
+    cards = list()
+    for f in files:
+        cards.extend(cards_from_file(f))
+    return cards
+
+
+def main(working_files=None):
+    app_output("Welcome to AndrewCards6.1!")
 
     last_success_file = None
     while True:
         try:
-            if working_file:
-                file = open_file(working_file)
+            if working_files:
+                cards = cards_from_files(working_files)
+                if not cards:
+                    return
             else:
                 app_output(menu_msg)
                 inp = app_input()
@@ -65,29 +80,26 @@ def main(working_file=None):
                 elif inp == ["-q", "-quit"]:
                     break
                 else:
-                    print(f"OPEN: .{inp}.")
-                    file = open_file(inp)
-                    if not file:
+                    cards = cards_from_file(inp)
+                    if not cards:
                         app_output("Can't read file {}".format(inp))
                         continue
+                    last_success_file = inp
 
-            pack = parse_file(file)
-            if pack:
-                last_success_file = file
-                train.run(pack)
+            if cards:
+                train.run(cards)
 
-            if working_file:
+            if working_files:
                 break
 
         except EOFError:
             break
 
-    app_output("Thanks for using AndrewCards5.0! Stay tuned and keep learning:)")
+    app_output("Thanks for using AndrewCards! Stay tuned and keep learning:)")
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("file", default=None, nargs="?")
+    parser.add_argument("file", nargs="*", help="one or several files with cards")
     args = parser.parse_args()
-    print(args)
-    main(working_file=args.file)
+    main(working_files=args.file)
