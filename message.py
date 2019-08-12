@@ -28,6 +28,7 @@ def choose_mode():
     app_output("2. Learning")
     app_output("3. Random picking")
     app_output("4. No-answer reviewing")
+    app_output("5. Pack reordering")
 
 
 def choose_range(a, b):
