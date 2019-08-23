@@ -59,8 +59,32 @@ def cards_from_files(files):
     return cards
 
 
-def main(working_files=None):
+def range_by_splits(splits):
+    # todo
+    if splits[0]:
+        n = splits[0]
+        return 25 * (n - 1), 25 * n
+    if splits[1]:
+        n = splits[1]
+        return 200 * (n - 1), 200 * n
+    return None
+
+def main(working_files=None, splits=None, begin=None, end=None):
     app_output("Welcome to AndrewCards6.1!")
+
+
+    if begin or end:
+        # todo check numbers
+        if begin:
+            begin -= 1
+        else:
+            begin = 0
+        # end included, None runs list to the end
+        cards_range = begin, end
+    elif splits:
+        cards_range = range_by_splits(splits)
+    else:
+        cards_range = None
 
     last_success_file = None
     while True:
@@ -88,6 +112,8 @@ def main(working_files=None):
                         continue
                     last_success_file = inp
 
+            if cards_range:
+                cards = cards[cards_range[0]:cards_range[1]]
             if cards:
                 train.run(cards)
 
@@ -102,6 +128,12 @@ def main(working_files=None):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+
+    # todo
     parser.add_argument("file", nargs="*", help="one or several files with cards")
+    parser.add_argument("-n", nargs="?", type=int, help="split by 25 cards")
+    parser.add_argument("-nh", nargs="?", type=int, help="split by 200 cards")
+    parser.add_argument("-b", nargs="?", type=int, help="begin index")
+    parser.add_argument("-e", nargs="?", type=int, help="end index")
     args = parser.parse_args()
-    main(working_files=args.file)
+    main(working_files=args.file, splits=[args.n, args.nh], begin=args.b, end=args.e)
